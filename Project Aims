@@ -1,0 +1,46 @@
+My Thought Process:
+    1) Display the menu sorted under categories
+    2) Customer can place an order which is sent to api
+    3) There is a second app for the restaurant used to track the following data:
+        -Orders
+        -Multiple Analytics (Just be adding them in for fun)
+    4) The second app can also be used to track resource ordering
+    5) This second app also needs to have a direct connection to the third app for restocking
+    6) There will be a third app that will be a market place for ordering agric items
+    7) I will need to sit down and decide the best course of action regarding the databases
+        which can only be done after learning about them. Initially, I will start with a cloud platform.
+    8) How will I go about achieving all of this?
+        -I need to learn a couple things:
+            :Graphql
+            :Nodejs
+            :Git
+            :How to deploy the app
+
+    9) What sort of data will a restaurant want?
+        -Revenue for day, week and month
+        -Best selling item for each day, week and month
+        -Two options of implementation:
+            : Each day has a recorded database linking item id with sales and price
+            : Each item keeps its data accordingly
+        -Looking at it, over the course of time the one that will make sense is each day
+            containing its own seperate data 
+        -Since we will go by each day having its own data, then week and month will also have their own.
+        -The data collected for each day:
+            : Item Id: {price,amount}
+            : Customer Satisfaction
+            : Total Revenue
+            : Number of Orders
+        -The data collected for each week/month:
+            : Customer Satisfaction
+            : Total Revenue
+        -Data to present:
+            : Revenue as compared to previous week/month as a percentage
+            : Best selling items, worst selling items (Top 3)
+
+    10) Next steps: 
+        -Implement navigation to an orders page
+        -Add square as the payment gateway
+        
+
+
+

@@ -1,21 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View
+} from "react-native";
 
-export default function App() {
+import FoodCard from "./Components/FoodCard";
+import LandingScreen from './Screens/LandingScreen'
+import MenuScreen from './Screens/MenuScreen'
+import { NavigationContainer } from '@react-navigation/native';
+import React from "react";
+import { createStackNavigator } from '@react-navigation/stack';
+import foods from "./items";
+
+const Stack = createStackNavigator();
+
+const App = () => {
+ 
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Landing">
+        <Stack.Screen name="Landing" component={LandingScreen}/>
+        <Stack.Screen name="Menu" component={MenuScreen}/>
+        
+        {/* <FoodCard/> */}
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
+
+const styles= StyleSheet.create({
+  root: {
+    backgroundColor: 'white',
+    height: "100%",
+    width: "100%"
+  }
+})
