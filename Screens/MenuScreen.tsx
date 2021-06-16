@@ -3,35 +3,61 @@ import {
     FlatList,
     Image,
     Pressable,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from "react-native";
 import React, { useState } from "react";
 
+import DropDownPicker from 'react-native-dropdown-picker';
 import foods from "../items";
 
 const MenuScreen = ({route,navigation}: any) => {
     const scrollY = React.useRef(new Animated.Value(0)).current;
-
-    const [food, setFood] = useState(foods);
-    
-    const [theOrder,setTheOrder]= useState(route.params.order);
+    const [categories,setCategories] = useState(['Main Courses', 'Shawarmas + Burgers', 'Pizza', 'Gurasa','Beef','Chicken','Sides']);
+    const [items,setItems] = useState([
+      {label: 'The Main Courses',value:'Main Courses'},
+      {label: 'Shawarmas & Burgers',value:'Shawarmas + Burgers'},
+      {label: 'Pizzas',value:'Pizza'},
+      {label: 'Gurasas',value:'Gurasa'},
+      {label: 'Beef Selection',value:'Beef'},
+      {label: 'Chicken Selection',value:'Chicken'},
+      {label: 'The Sides',value:'Sides'},
+  ])
+    const [open,setOpen] = useState(false);
+    const [theCategory, setTheCategory] = useState(categories[0]);
 
     const AddToOrder = (id: string) => {
-      const arrHold= theOrder
-      arrHold.push(id)
-      setTheOrder(arrHold)
+      
     };
+    
+    const changeCategory = (category: string) =>{
+      setTheCategory(category)
+    }
 
     return (
         <View style={styles.container}>
-          <View style={styles.header}>
-              <Text style={styles.menuTitle}>{theOrder}</Text>
+          <View style={styles.dropDownContainer}>
+          <TouchableOpacity style={styles.orderButton} onPress={()=>navigation.replace('Order')}>
+              <Text style={styles.orderText}>Order</Text>
+            </TouchableOpacity>
+            <DropDownPicker
+            listMode="MODAL"
+            open={open}
+            value={theCategory}
+            items={items}
+            setOpen={setOpen}
+            setValue={setTheCategory}
+            setItems={setItems}
+            style={styles.dropDown}
+            />
+            
+          
           </View>
 
-          <View style={styles.scrollContainer}>
+          <View style={styles.scrollContainer} onLayout={()=>changeCategory(categories[0])}>
               
               <Animated.FlatList
               data={foods}
@@ -55,10 +81,21 @@ const MenuScreen = ({route,navigation}: any) => {
                   outputRange: [1, 1, 1, 0],
                   });
 
-                  const { id, Name, Description, Available, Price, Img} =
+                  const { id, Name, Description, Available, Price, Img, Category} =
                   item;
+                  var priceTXT = '';
 
-                  if (Available) {
+                  if (Price.Small){
+                      priceTXT = 'Small: N' + Price.Small + '\n'
+                  }
+                  if (Price.Regular){
+                      priceTXT = priceTXT + 'Regular: N' + Price.Regular + '\n'
+                  }
+                  if (Price.Large){
+                      priceTXT = priceTXT + 'Large: N' + Price.Large + '\n'
+                  }
+
+                  if ((Category === theCategory)) {
                   return (
                       <Animated.View
                       style={[
@@ -78,9 +115,7 @@ const MenuScreen = ({route,navigation}: any) => {
                       <View style={styles.mainContainer}>
                           <View style={styles.infoContainer}>
                           <Text style={styles.itemName}>{Name}</Text>
-
-                          <Text style={styles.itemDesc}>{Description}.</Text>
-                          <Text style={styles.itemPrice}>N{Price}</Text>
+                          <Text style={styles.itemPrice}>{priceTXT}</Text>
                           </View>
                           <View >
                           <TouchableOpacity style={styles.orderContainer} onPress={() => AddToOrder(id)}>
@@ -104,17 +139,36 @@ export default MenuScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "rgba(224,224,224,0.3)",
+        backgroundColor: "white",
         alignItems: "center",
         justifyContent: "center",
       },
-      header: {
-        flex: 1,
+      dropDownContainer: {
+        width: '100%',
+        flexDirection: "row",
+        elevation: 1
+      },
+      dropDown:{
+        borderWidth: 0,
+        width: '80%'
+      },
+      orderButton: {
         backgroundColor: "#02ccf0",
-        width: "100%",
-        height: "100%",
-        alignItems: "center",
-        flexDirection: "column-reverse",
+        borderRadius: 7,
+        borderColor: 'white',
+        borderWidth: 1,
+        padding:5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+        margin: 2,
+        marginHorizontal: 3,
+        height: 40,
+        width: '20%'
+      },
+      categoriesText: {
+        color: 'white',
+        fontSize: 16
       },
       scrollContainer: {
         flex: 8,
@@ -124,7 +178,7 @@ const styles = StyleSheet.create({
         marginLeft: 12.5,
         marginRight: 12.5,
         marginTop: 15,
-        height: 80,
+        height: 70,
         flexDirection: "row",
         backgroundColor: "white",
         borderRadius: 15,
@@ -139,29 +193,33 @@ const styles = StyleSheet.create({
       
       mainContainer: {
         flexDirection: "row",
-        width: 180
+        width: 180,
+        alignItems: 'center'
       },
       imageContainer: {
-        height: 60,
-        width: 64,
+        height: 55,
+        width: 55,
         alignSelf: 'center',
         paddingLeft:5,
-        marginRight: 10,
+        marginRight: 20,
         borderRadius: 20,
+        left:5,
       },
       infoContainer: {
-        paddingRight: 20,
-        width: "80%",
+        paddingRight: 5,
+        width: "85%",
         flexDirection: "column",
       },
       orderContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 25,
+        margin: 13,
+        left: 5,
         borderRadius: 5,
         backgroundColor: '#02ccf0',
         height: 35,
         textAlign: 'center',
+
       },
       menuTitle: {
         fontSize: 32,
@@ -170,19 +228,20 @@ const styles = StyleSheet.create({
         fontFamily: "Avenir-Heavy",
       },
       itemName: {
-        fontSize: 24,
-        fontFamily: "Avenir-Medium",
-        fontWeight: '400'
+        paddingTop: 10,
+        fontSize: 14,
+        fontFamily: "Avenir-Heavy",
+        fontWeight: '600'
       },
       itemDesc: {
-        fontSize: 18,
+        fontSize: 10,
         fontFamily: "Avenir-Light",
         opacity: 0.7,
       },
       itemPrice: {
-        fontFamily: 'Avenir-Heavy',
+        fontFamily: 'Avenir-Light',
         alignSelf: 'flex-start',
-        left: 0
+        fontSize: 10,
       },
       img: {
         width: "100%",
@@ -191,6 +250,7 @@ const styles = StyleSheet.create({
       },
       orderText: {
         color: 'white',
-        padding: 10,
+        textAlign: 'center',
+        paddingHorizontal: 10
       }
 })

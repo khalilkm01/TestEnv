@@ -7,7 +7,7 @@ const LandingScreen = ({navigation}: any) => {
     const NAME = "Pizza and Gurasa";
     
     setTimeout(() => {
-        navigation.navigate('Menu',{
+        navigation.replace('Menu',{
             order: []
         })
     }, 3000);
